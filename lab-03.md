@@ -1,7 +1,7 @@
 Lab 03 - Nobel laureates
 ================
-Insert your name here
-Insert date here
+Lindsay Stall
+01/20/2023
 
 ### Load packages and data
 
