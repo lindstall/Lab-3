@@ -74,21 +74,48 @@ nobel_living_science <- nobel_living %>%
 ```
 
 ``` r
-ggplot(nobel_living_science, aes(y = country_us))+
+nobel_living_sciences <- filter(nobel_living_science, country_us != "NA")
+```
+
+``` r
+ggplot(nobel_living_sciences, aes(y = country_us))+
 geom_bar()+
 facet_wrap(~category, ncol = 1)
 ```
 
-![](lab-03_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](lab-03_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> While the US
+has many more nobel prize winning scientists than other countries in the
+field of economics, it has fewer in the field of Chemistry and
+comparable amounts in Medicine and Physics.
 
 ### Exercise 4
 
-…
+``` r
+nobel_living <- nobel_living %>%
+  mutate(
+    born_country_us = if_else(born_country == "USA", "USA", "Other")
+  )
+```
+
+``` r
+nobel_living <- nobel_living %>%
+  select(born_country_us)
+summary(as.factor(nobel_living$born_country_us))
+```
+
+    ## Other   USA  NA's 
+    ##   636   271    28
+
+271 were born in the US.
 
 ### Exercise 5
 
-…
+``` r
+ggplot(nobel_living_sciences, aes(y = country_us), fill(born_country_us))+
+geom_bar()+
+facet_wrap(~category, ncol = 1)
+```
+
+![](lab-03_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ### Exercise 6
-
-…
