@@ -19,8 +19,8 @@ nobel <- read_csv("data/nobel.csv")
 
 ### Exercise 1
 
-```{rview}
-view(nobel)
+```{r summ}
+summary(nobel)
 ```
 
 
@@ -28,7 +28,7 @@ There are 935 observations, and 26 variables. Each row represents information of
 
 ### Exercise 2
 
-```{r}
+```{r filter}
 nobel_living <- nobel
 
 nobel_living %>% 
@@ -43,7 +43,7 @@ nobel_living %>%
 
 ### Exercise 3
 
-```{r}
+```{r facet}
 nobel_living <- nobel_living %>%
   mutate(
     country_us = if_else(country == "USA", "USA", "Other")
@@ -52,17 +52,13 @@ nobel_living <- nobel_living %>%
 
 ```{r}
 nobel_living_science <- nobel_living %>%
-  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))
-```
-
-```{r}
-nobel_living_sciences <- filter(nobel_living_science, country_us != "NA")
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))%>%
+  filter(country_us != "NA")
 ```
 
 
-
 ```{r}
-ggplot(nobel_living_sciences, aes(y = country_us))+
+ggplot(nobel_living_science, aes(y = country_us))+
 geom_bar()+
 facet_wrap(~category, ncol = 1)
 ```
@@ -70,15 +66,13 @@ While the US has many more nobel prize winning scientists than other countries i
 
 
 ### Exercise 4
-```{r}
+```{r born-country}
 nobel_living <- nobel_living %>%
-  mutate(
-    born_country_us = if_else(born_country == "USA", "USA", "Other")
-  )
+  mutate(born_country_us = if_else(born_country == "USA", "USA", "Other"))
 ```
 
 ```{r}
-nobel_living <- nobel_living %>%
+nobel_living %>%
   select(born_country_us)
 summary(as.factor(nobel_living$born_country_us))
 ```
@@ -86,17 +80,34 @@ summary(as.factor(nobel_living$born_country_us))
 
 ### Exercise 5
 
-```{r}
-ggplot(nobel_living_sciences, aes(y = country_us), fill(born_country_us))+
+```{r mutate}
+nobel_living_science <- nobel_living %>%
+  mutate(born_country_us = if_else(born_country == "USA", "USA", "Other"))
+```
+
+```{r filtering}
+nobel_living_science <- nobel_living %>% 
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))%>%
+  filter(country_us != "NA")
+```
+
+
+```{r graphs}
+ggplot(nobel_living_science, aes(x = country_us, color = born_country_us, fill= born_country_us))+
 geom_bar()+
 facet_wrap(~category, ncol = 1)
 
 ```
 
+Buzzfeed said that most living laureates  were based in the US when they were born. The above graph shows that that is only true for economics. While there are a lot of people born outside of the US who got the award, of the ones who received it in US, most were born in the US.
 
 ### Exercise 6
 
 ```{r}
-
+nobel_living_science %>%
+  filter(country_us == "USA") %>%
+  filter(born_country_us == "Other") %>%
+  count(born_country) %>%
+  arrange(desc(n))
 ```
-
+Most of the winners from the US were born in the UK.
